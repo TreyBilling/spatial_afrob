@@ -46,7 +46,7 @@ r7 <- haven::read_sav(here::here("afrob", "merged_byround_nogeo",
 
 # Religious ID ------------------------------------------------------------
 
-relgroups <- readxl::read_excel(here::here("religious_id_tidy.xlsx"))
+relgroups <- readxl::read_excel(here::here("data", "religious_id_tidy.xlsx"))
 relgroups$value <- as.numeric(relgroups$value)
 
 # Round 2
@@ -576,8 +576,14 @@ to.plain <- function(s) {
 
 
 
-incumbents <- read.csv(here::here("data", "incumbents.csv"))
-incumbents <- incumbents %>% select(-party) %>% 
+# incumbents <- read_csv(here::here("data", "incumbents.csv"),
+#                        local = locale(encoding = "UTF-8"))
+
+incumbents <- read_csv(here::here("data", "incumbents.csv"),
+                       local = locale(encoding = "latin1"))
+incumbents <- incumbents %>% 
+  select(-party) %>% 
+  mutate(afrob_name = to.plain(afrob_name)) %>% 
   mutate(afrob_name = to.plain(afrob_name),
          afrob_name = case_when(substr(afrob_name, 1, 3) == "CDP" & country == "Burkina Faso" & round == "r4" ~ "CDP", 
                                 substr(afrob_name, 1, 8) == "Movement" & country == "Zambia" & round == "r4" ~ "MMD",
